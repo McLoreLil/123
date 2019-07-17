@@ -13,7 +13,7 @@ const server = mysql.createConnection({
 server.connect(function(err){
     if (err) return console.log('[MYSQL] Ошибка подключения к базе MySQL');
     console.log('[MYSQL] Вы успешно подключились к базе данных.');
-    connection.query("SET SESSION wait_timeout = 604800");
+    server.query("SET SESSION wait_timeout = 604800");
 });
 
 const allow_servers = [
