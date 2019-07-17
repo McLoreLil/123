@@ -46,11 +46,17 @@ bot.on('message', async (message) => {
         if (description.length < 5) return message.reply(`описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT LAST_INSERT_ID()`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCard(`Баг-репорт №${+answer + 1}`, `${description}`, `5d2c6bc16cfdd530bb00d786`, (error, trelloCard) => {
+            trello.addCardWithExtraParams('test', {
+                "desc": 'test2',
+                "labels": "Баг"
+            }, `5d2c6bc16cfdd530bb00d786`, (err) => {
+                if (err) console.error(err);
+            });
+            trello.addCard(`Баг-репорт №${+answer[0] + 1}`, `${description}`, `5d2c6bc16cfdd530bb00d786`, (error, trelloCard) => {
                 if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
-                server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard}', '${message.author.id}', '${description}')`, (error) => {
+                server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
-                    message.reply(`вы отправили отчёт об ошибке №${+answer + 1} в баг-трекер.`);
+                    message.reply(`вы отправили отчёт об ошибке №${+answer[0] + 1} в баг-трекер.`);
                 });
             });
         });
