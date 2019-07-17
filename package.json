@@ -1,0 +1,23 @@
+{
+  "name": "arizona-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Artemka076/arizona-project.git"
+  },
+  "author": "Kory McGregor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Artemka076/arizona-project/issues"
+  },
+  "homepage": "https://github.com/Artemka076/arizona-project#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "trello": "^0.9.1"
+  }
+}
