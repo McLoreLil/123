@@ -30,6 +30,8 @@ bot.on('message', async (message) => {
     if (message.content.startsWith('/bug')){
         if (!user["add-cards"]) return message.reply(`недостаточно прав доступа!`);
         const description = message.content.split('/bug ')[1];
+        if (!description) message.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
+        if (description.length < 5) message.reply(`описание должно быть ясным и понятным для его отправки`);
         trello.addCard(`Bug Report #${new Date().valueOf()}`, `${description}`, `5d2c6bc16cfdd530bb00d786`, (error, trelloCard) => {
             if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
             message.reply(`вы отправили отчёт об ошибке в баг-трекер.`);
