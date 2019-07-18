@@ -170,14 +170,14 @@ bot.on('message', async (message) => {
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
                 if (error) return message.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return message.reply(`данная карточка уже удалена.`);
-                if (card.idList == "5cbc665a32c3790159efe754") return message.reply(`данная карточка уже удалена.`);
+                if (card.idList == "5cbc5d6954567c1211a92d45") return message.reply(`данная карточка уже удалена.`);
                 if (user["delete-cards"]){
                     trello.deleteCard(`${answer[0].card}`, (error) => {
                         if (error) return message.reply(`произошла ошибка при удалении карточки.`);
                         message.reply(`\`вы успешно удалили карточку #${args[1]} в баг-трекере.\``);
                     });
                 }else{
-                    trello.updateCardList(`${answer[0].card}`, '5cbc665a32c3790159efe754', (error) => {
+                    trello.updateCardList(`${answer[0].card}`, '5cbc5d6954567c1211a92d45', (error) => {
                         if (error) return message.reply(`произошла ошибка при удалении карточки.`);
                         message.reply(`\`вы успешно удалили карточку #${args[1]} в баг-трекере.\``);
                     });
@@ -316,14 +316,14 @@ vk.command('', (_answer) => {
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
                 if (error) return _answer.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return _answer.reply(`Данная карточка уже удалена.`);
-                if (card.idList == "5cbc665a32c3790159efe754") return _answer.reply(`Данная карточка уже удалена.`);
+                if (card.idList == "5cbc5d6954567c1211a92d45") return _answer.reply(`Данная карточка уже удалена.`);
                 /*if (user["delete-cards"]){
                     trello.deleteCard(`${answer[0].card}`, (error) => {
                         if (error) return _answer.reply(`Произошла ошибка при удалении карточки.`);
                         _answer.reply(`Вы успешно удалили карточку #${args[1]} в баг-трекере.`);
                     });
                 }else{*/
-                    trello.updateCardList(`${answer[0].card}`, '5cbc665a32c3790159efe754', (error) => {
+                    trello.updateCardList(`${answer[0].card}`, '5cbc5d6954567c1211a92d45', (error) => {
                         if (error) return _answer.reply(`Произошла ошибка при удалении карточки.`);
                         _answer.reply(`Вы успешно удалили карточку #${args[1]} в баг-трекере.`);
                     });
