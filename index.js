@@ -52,7 +52,8 @@ bot.on('message', async (message) => {
                 if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
-                    message.reply(`вы отправили отчёт об ошибке №${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`, {embed: { description: `${description}` }});
+                    const embed = new Discord.RichEmbed().setDescription(`${description}`);
+                    message.reply(`вы отправили отчёт об ошибке №${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`, embed);
                 });
             });
         });
