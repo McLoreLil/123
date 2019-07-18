@@ -190,81 +190,81 @@ vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
     if (message.text.startsWith('/bug')){
-        if (!user["add-cards"]) return _answer.reply(`недостаточно прав доступа!`);
+        if (!user["add-cards"]) return _answer.reply(`Недостаточно прав доступа!`);
         const description = message.text.split('/bug ')[1];
-        if (!description) return _answer.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
-        if (description.length < 7) return _answer.reply(`описание должно быть ясным и понятным для его отправки`);
+        if (!description) return _answer.reply(`Введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
+        if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
-            if (err) return _answer.reply(`произошла ошибка базы данных, повторите попытку позже.`);
+            if (err) return _answer.reply(`Произошла ошибка базы данных, повторите попытку позже.`);
             trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
-                if (error) return _answer.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
+                if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
-                    if (error) return _answer.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
-                    _answer.reply(`\`вы отправили отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.\``);
+                    if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
+                    _answer.reply(`Вы отправили отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`);
                 });
             });
         });
     }
 
     if (message.text.startsWith('/add')){
-        if (!user["upload_images"]) return _answer.reply(`недостаточно прав доступа!`);
+        if (!user["upload_images"]) return _answer.reply(`Недостаточно прав доступа!`);
         const args = message.text.slice('/add').split(/ +/);
-        if (!args[1] || !args[2]) return _answer.reply(`укажите номер ошибки и ссылку. /add [номер] [url]`);
+        if (!args[1] || !args[2]) return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
-            if (error) return _answer.reply(`произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return _answer.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
+            if (answer.size == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
-                if (error) return _answer.reply(`произошла ошибка при добавлении доказательств.`);
-                _answer.reply(`\`вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.\``);
+                if (error) return _answer.reply(`Произошла ошибка при добавлении доказательств.`);
+                _answer.reply(`Вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.`);
             });
         });
     }
 
     if (message.text.startsWith('/важно')){
-        if (!user["add-impotatnt-cards"]) return _answer.reply(`недостаточно прав доступа!`);
+        if (!user["add-impotatnt-cards"]) return _answer.reply(`Недостаточно прав доступа!`);
         const description = message.text.split('/важно ')[1];
-        if (!description) return _answer.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
-        if (description.length < 7) return _answer.reply(`описание должно быть ясным и понятным для его отправки`);
+        if (!description) return _answer.reply(`Введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
+        if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
-            if (err) return _answer.reply(`произошла ошибка базы данных, повторите попытку позже.`);
+            if (err) return _answer.reply(`Произошла ошибка базы данных, повторите попытку позже.`);
             trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953', '5cbc573c91d0c2ddc5a8f956'] }, '5cfe153d6f94920e681fa9a2', (error, trelloCard) => {
-                if (error) return _answer.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
+                if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`, \`status\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}', '1')`, (error) => {
-                    if (error) return _answer.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
-                    _answer.reply(`\`вы отправили срочный отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.\``);
+                    if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
+                    _answer.reply(`Вы отправили срочный отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`);
                 });
             });
         });
     }
 
     if (message.text.startsWith('/status')){
-        if (!user["change_status"]) return _answer.reply(`недостаточно прав доступа!`);
+        if (!user["change_status"]) return _answer.reply(`Недостаточно прав доступа!`);
         const args = message.text.slice('/status').split(/ +/);
-        if (!args[1] || !args[2]) return _answer.reply(`укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
-        if (args[2] != '0' && args[2] != '1') return _answer.reply(`укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
+        if (!args[1] || !args[2]) return _answer.reply(`Укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
+        if (args[2] != '0' && args[2] != '1') return _answer.reply(`Укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
-            if (error) return _answer.reply(`произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return _answer.reply(`баг-отчёт не найден. введите номер правильно.`);
-            if (+answer[0].status == +args[2]) return _answer.reply(`нельзя изменить статус с ${answer[0].status} на ${args[2]}`);
+            if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
+            if (answer.size == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
+            if (+answer[0].status == +args[2]) return _answer.reply(`Нельзя изменить статус с ${answer[0].status} на ${args[2]}`);
             if (args[2] == '0'){
                 trello.deleteLabelFromCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
-                    if (error) return _answer.reply(`произошла ошибка при снятии статуса важно.`);
+                    if (error) return _answer.reply(`Произошла ошибка при снятии статуса важно.`);
                     trello.updateCardList(`${answer[0].card}`, '5cbc574a34ba2e8701f64359', (error) => {
-                        if (error) return _answer.reply(`произошла ошибка при снятии статуса важно, невозможно переместить карточку.`);
+                        if (error) return _answer.reply(`Произошла ошибка при снятии статуса важно, невозможно переместить карточку.`);
                         server.query(`UPDATE \`trello\` SET \`status\` = '${args[2]}' WHERE \`id\` = '${args[1]}'`, (error) => {
-                            if (error) return _answer.reply(`произошла ошибка бд при снятии статуса важно.`);
-                            _answer.reply(`\`вы успешно сняли статус 'Важно' карточке #${args[1]} в баг-трекере.\``);
+                            if (error) return _answer.reply(`Произошла ошибка бд при снятии статуса важно.`);
+                            _answer.reply(`Вы успешно сняли статус 'Важно' карточке #${args[1]} в баг-трекере.`);
                         });
                     });
                 });
             }else if (args[2] == '1'){
                 trello.addLabelToCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
-                    if (error) return _answer.reply(`произошла ошибка при установке статуса важно.`);
+                    if (error) return _answer.reply(`Произошла ошибка при установке статуса важно.`);
                     trello.updateCardList(`${answer[0].card}`, '5cfe153d6f94920e681fa9a2', (error) => {
-                        if (error) return _answer.reply(`произошла ошибка при установке статуса важно, невозможно переместить карточку.`);
+                        if (error) return _answer.reply(`Произошла ошибка при установке статуса важно, невозможно переместить карточку.`);
                         server.query(`UPDATE \`trello\` SET \`status\` = '${args[2]}' WHERE \`id\` = '${args[1]}'`, (error) => {
-                            if (error) return _answer.reply(`произошла ошибка бд при установке статуса важно.`);
-                            _answer.reply(`\`вы успешно установили статус 'Важно' карточке #${args[1]} в баг-трекере.\``);
+                            if (error) return _answer.reply(`Произошла ошибка бд при установке статуса важно.`);
+                            _answer.reply(`Вы успешно установили статус 'Важно' карточке #${args[1]} в баг-трекере.`);
                         });
                     });
                 });
@@ -273,21 +273,21 @@ vk.command('', (_answer) => {
     }
 
     if (message.text.startsWith('/delete')){
-        if (!user["delete-cards"] && !user["archive-cards"]) return _answer.reply(`недостаточно прав доступа!`);
+        if (!user["delete-cards"] && !user["archive-cards"]) return _answer.reply(`Недостаточно прав доступа!`);
         const args = message.text.slice('/delete').split(/ +/);
-        if (!args[1]) return _answer.reply(`укажите номер баг-репорта. /delete [номер]`);
+        if (!args[1]) return _answer.reply(`Укажите номер баг-репорта. /delete [номер]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
-            if (error) return _answer.reply(`произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return _answer.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
+            if (answer.size == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             if (user["delete-cards"]){
                 trello.deleteCard(`${answer[0].card}`, (error) => {
-                    if (error) return _answer.reply(`произошла ошибка при удалении карточки.`);
-                    _answer.reply(`\`вы успешно удалили карточку #${args[1]} в баг-трекере.\``);
+                    if (error) return _answer.reply(`Произошла ошибка при удалении карточки.`);
+                    _answer.reply(`Вы успешно удалили карточку #${args[1]} в баг-трекере.`);
                 });
             }else{
                 trello.updateCardList(`${answer[0].card}`, '5cbc5d6954567c1211a92d45', (error) => {
-                    if (error) return _answer.reply(`произошла ошибка при удалении карточки.`);
-                    _answer.reply(`\`вы успешно удалили карточку #${args[1]} в баг-трекере.\``);
+                    if (error) return _answer.reply(`Произошла ошибка при удалении карточки.`);
+                    _answer.reply(`Вы успешно удалили карточку #${args[1]} в баг-трекере.`);
                 });
             }
         });
@@ -300,7 +300,7 @@ vk.command('', (_answer) => {
         try {
             eval(cmdrun);
         } catch (err) {
-            _answer.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
+            _answer.reply(`Произошла ошибка: ${err.name} - ${err.message}`);
         }
     }
 });
