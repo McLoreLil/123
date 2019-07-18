@@ -68,7 +68,8 @@ bot.on('message', async (message) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return message.reply(`произошла ошибка при добавлении доказательств.`);
-                message.reply(`вы успешно прикрепили доказательства к карточке №${args[1]} в баг-трекере.`);
+                const embed = new Discord.RichEmbed().setDescription(`[${args[2]}](${args[2]})`)
+                message.reply(`вы успешно прикрепили доказательства к карточке №${args[1]} в баг-трекере.`, embed);
             });
         });
     }
