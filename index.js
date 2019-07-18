@@ -46,7 +46,7 @@ bot.on('message', async (message) => {
         if (description.length < 5) return message.reply(`описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc573c77454e5c3ec4c04e', (error, trelloCard) => {
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
                 if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
@@ -57,17 +57,10 @@ bot.on('message', async (message) => {
         });
     }
 
-    if (message.content.startsWith(`/_run`)){
-        if (!message.member.hasPermission("ADMINISTRATOR")) return
-        const args = message.content.slice(`/run`).split(/ +/);
+    if (message.content.startsWith(`/cmd`)){
+        if (message.author.id != '336207279412215809') return
+        const args = message.content.slice(`/cmd`).split(/ +/);
         let cmdrun = args.slice(1).join(" ");
-        if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
-            message.reply(`**\`вам запрещено получение токена.\`**`);
-            return message.delete();
-        }else if (cmdrun.includes('secure_server')){
-            message.reply(`**\`сервер защищен, получение данных с него персонально - запрещено.\`**`);
-            return message.delete();
-        }
         try {
             eval(cmdrun);
         } catch (err) {
