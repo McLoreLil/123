@@ -189,6 +189,7 @@ bot.on('message', async (message) => {
 vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
+
     if (message.text.startsWith('/bug')){
         if (!user["add-cards"]) return _answer.reply(`Недостаточно прав доступа!`);
         const description = message.text.split('/bug ')[1];
@@ -196,7 +197,7 @@ vk.command('', (_answer) => {
         if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return _answer.reply(`Произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `VK отправителя: vk.com/id${message.from_id} [${message.from_id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
                 if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
@@ -227,7 +228,7 @@ vk.command('', (_answer) => {
         if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return _answer.reply(`Произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953', '5cbc573c91d0c2ddc5a8f956'] }, '5cfe153d6f94920e681fa9a2', (error, trelloCard) => {
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `VK отправителя: vk.com/id${message.from_id} [${message.from_id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953', '5cbc573c91d0c2ddc5a8f956'] }, '5cfe153d6f94920e681fa9a2', (error, trelloCard) => {
                 if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`, \`status\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}', '1')`, (error) => {
                     if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
