@@ -31,6 +31,7 @@ const allow_users = {
         "change_status": true, // Возможность изменять статус карточки [важная/обычная]
         "archive-cards": true, // При удалении карточка переместится в корзину
         "delete-cards": true, // При удалении карточка будет удалена
+        "can_manage": true, // Возможность управлять другими карточками
     }
 };
 
@@ -42,6 +43,7 @@ const allow_vk_users = {
         "change_status": true, // Возможность изменять статус карточки [важная/обычная]
         "archive-cards": true, // При удалении карточка переместится в корзину
         "delete-cards": true, // При удалении карточка будет удалена
+        "can_manage": true, // Возможность управлять другими карточками
     },
     "141936783": {
         "add-cards": true, // Возможность добавлять карточки в баг-трекер
@@ -50,6 +52,7 @@ const allow_vk_users = {
         "change_status": true, // Возможность изменять статус карточки [важная/обычная]
         "archive-cards": true, // При удалении карточка переместится в корзину
         "delete-cards": true, // При удалении карточка будет удалена
+        "can_manage": true, // Возможность управлять другими карточками
     },
     "474499828": {
         "add-cards": true, // Возможность добавлять карточки в баг-трекер
@@ -58,6 +61,7 @@ const allow_vk_users = {
         "change_status": true, // Возможность изменять статус карточки [важная/обычная]
         "archive-cards": true, // При удалении карточка переместится в корзину
         "delete-cards": true, // При удалении карточка будет удалена
+        "can_manage": true, // Возможность управлять другими карточками
     }
 }
 
@@ -105,6 +109,9 @@ bot.on('message', async (message) => {
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
             if (answer.length == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (answer[0].type != '0' || answer[0].author != `${message.author.id}`){
+                if (!user["can_manage"]) return message.reply(`вы не можете изменять данный баг-репорт.`);
+            }
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return message.reply(`произошла ошибка при добавлении доказательств.`);
                 const embed = new Discord.RichEmbed().setDescription(`[${args[2]}](${args[2]})`)
@@ -176,6 +183,9 @@ bot.on('message', async (message) => {
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
             if (answer.length == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (answer[0].type != '0' || answer[0].author != `${message.author.id}`){
+                if (!user["can_manage"]) return message.reply(`вы не можете изменять данный баг-репорт.`);
+            }
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
                 if (error) return message.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return message.reply(`данная карточка уже удалена.`);
@@ -210,7 +220,7 @@ bot.on('message', async (message) => {
 vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
-
+    console.log(_answer);
     if (message.text.startsWith('/bug')){
         if (!user["add-cards"]) return _answer.reply(`Недостаточно прав доступа!`);
         const description = message.text.split('/bug ')[1];
@@ -242,6 +252,9 @@ vk.command('', (_answer) => {
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
             if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
+            if (answer[0].type != '1' || answer[0].author != `${message.from_id}`){
+                if (!user["can_manage"]) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
+            }
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return _answer.reply(`Произошла ошибка при добавлении доказательств.`);
                 _answer.reply(`Вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.`);
@@ -315,6 +328,9 @@ vk.command('', (_answer) => {
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
             if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
+            if (answer[0].type != '1' || answer[0].author != `${message.from_id}`){
+                if (!user["can_manage"]) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
+            }
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
                 if (error) return _answer.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return _answer.reply(`Данная карточка уже удалена.`);
