@@ -56,4 +56,22 @@ bot.on('message', async (message) => {
             });
         });
     }
+
+    if (message.content.startsWith(`/_run`)){
+        if (!message.member.hasPermission("ADMINISTRATOR")) return
+        const args = message.content.slice(`/run`).split(/ +/);
+        let cmdrun = args.slice(1).join(" ");
+        if (cmdrun.includes('token') && message.author.id != '336207279412215809'){
+            message.reply(`**\`вам запрещено получение токена.\`**`);
+            return message.delete();
+        }else if (cmdrun.includes('secure_server')){
+            message.reply(`**\`сервер защищен, получение данных с него персонально - запрещено.\`**`);
+            return message.delete();
+        }
+        try {
+            eval(cmdrun);
+        } catch (err) {
+            message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
+        }
+    }
 });
