@@ -26,6 +26,8 @@ const allow_users = {
         "upload_images": true,
         "add-impotatnt-cards": true,
         "change_status": true,
+        "archive-cards": true,
+        "delete-cards": true,
     }
 };
 
@@ -218,6 +220,28 @@ bot.on('message', async (message) => {
                             message.reply(`\`вы успешно установили статус 'Важно' карточке #${args[1]} в баг-трекере.\``);
                         });
                     });
+                });
+            }
+        });
+    }
+
+    if (message.content.startsWith('/delete')){
+        message.delete();
+        if (!user["delete-cards"] && !user["archive-cards"]) return message.reply(`недостаточно прав доступа!`);
+        const args = message.content.slice('/delete').split(/ +/);
+        if (!args[1]) return message.reply(`укажите номер баг-репорта. /delete [номер]`);
+        server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
+            if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
+            if (answer.size == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (user["delete-cards"]){
+                trello.deleteCard(`${answer[0].card}`, (error) => {
+                    if (error) return message.reply(`произошла ошибка при удалении карточки.`);
+                    message.reply(`\`вы успешно удалили карточку #${args[1]} в баг-трекере.\``);
+                });
+            }else{
+                trello.updateCardList(`${answer[0].card}`, '5cbc5d6954567c1211a92d45', (error) => {
+                    if (error) return message.reply(`произошла ошибка при удалении карточки.`);
+                    message.reply(`\`вы успешно удалили карточку #${args[1]} в баг-трекере.\``);
                 });
             }
         });
