@@ -50,6 +50,14 @@ const allow_vk_users = {
         "change_status": true, // Возможность изменять статус карточки [важная/обычная]
         "archive-cards": true, // При удалении карточка переместится в корзину
         "delete-cards": true, // При удалении карточка будет удалена
+    },
+    "474499828": {
+        "add-cards": true, // Возможность добавлять карточки в баг-трекер
+        "upload_images": true, // Возможность прикреплять ссылки в баг-трекер
+        "add-impotatnt-cards": true, // Возможность добавлять важные карточки
+        "change_status": true, // Возможность изменять статус карточки [важная/обычная]
+        "archive-cards": true, // При удалении карточка переместится в корзину
+        "delete-cards": true, // При удалении карточка будет удалена
     }
 }
 
@@ -78,7 +86,7 @@ bot.on('message', async (message) => {
         if (description.length < 7) return message.reply(`описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5d300f8359d01f8ded39dc89', (error, trelloCard) => {
                 if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
@@ -137,7 +145,7 @@ bot.on('message', async (message) => {
             if (args[2] == '0'){
                 trello.deleteLabelFromCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
                     if (error) return message.reply(`произошла ошибка при снятии статуса важно.`);
-                    trello.updateCardList(`${answer[0].card}`, '5cbc574a34ba2e8701f64359', (error) => {
+                    trello.updateCardList(`${answer[0].card}`, '5d300f8359d01f8ded39dc89', (error) => {
                         if (error) return message.reply(`произошла ошибка при снятии статуса важно, невозможно переместить карточку.`);
                         server.query(`UPDATE \`trello\` SET \`status\` = '${args[2]}' WHERE \`id\` = '${args[1]}'`, (error) => {
                             if (error) return message.reply(`произошла ошибка бд при снятии статуса важно.`);
@@ -214,7 +222,7 @@ vk.command('', (_answer) => {
             let _data = vk.api(`users.get`, {user_ids: `${message.from_id}`, fields: `first_name,last_name`, access_token: process.env.vk_token }); 
             _data.then(data => { 
                 if (!data || !data.response[0] || !data.response[0].first_name || !data.response[0].last_name) return _answer.reply(`Произошла ошибка получения данных, повторите попытку позже.`);
-                trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `VK отправителя: ${data.response[0].first_name} ${data.response[0].last_name} [${message.from_id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
+                trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `VK отправителя: ${data.response[0].first_name} ${data.response[0].last_name} [${message.from_id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5d300f8359d01f8ded39dc89', (error, trelloCard) => {
                     if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
                     server.query(`INSERT INTO \`trello\` (\`card\`, \`type\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '1', '${message.from_id}', '${description}')`, (error) => {
                         if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
@@ -277,7 +285,7 @@ vk.command('', (_answer) => {
             if (args[2] == '0'){
                 trello.deleteLabelFromCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
                     if (error) return _answer.reply(`Произошла ошибка при снятии статуса важно.`);
-                    trello.updateCardList(`${answer[0].card}`, '5cbc574a34ba2e8701f64359', (error) => {
+                    trello.updateCardList(`${answer[0].card}`, '5d300f8359d01f8ded39dc89', (error) => {
                         if (error) return _answer.reply(`Произошла ошибка при снятии статуса важно, невозможно переместить карточку.`);
                         server.query(`UPDATE \`trello\` SET \`status\` = '${args[2]}' WHERE \`id\` = '${args[1]}'`, (error) => {
                             if (error) return _answer.reply(`Произошла ошибка бд при снятии статуса важно.`);
