@@ -62,7 +62,6 @@ bot.on('message', async (message) => {
     if (message.author.bot) return
     if (!allow_servers.some(server => message.guild.id == server)) return
     let user = allow_users[message.author.id]
-    if (!user) return
     
     if (message.content.startsWith('/bug')){
         message.delete();
