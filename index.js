@@ -104,7 +104,7 @@ bot.on('message', async (message) => {
         if (!args[1] || !args[2]) return message.reply(`укажите номер ошибки и ссылку. /add [номер] [url]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (answer.length == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return message.reply(`произошла ошибка при добавлении доказательств.`);
                 const embed = new Discord.RichEmbed().setDescription(`[${args[2]}](${args[2]})`)
@@ -140,7 +140,7 @@ bot.on('message', async (message) => {
         if (args[2] != '0' && args[2] != '1') return message.reply(`укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (answer.length == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
             if (+answer[0].status == +args[2]) return message.reply(`нельзя изменить статус с ${answer[0].status} на ${args[2]}`);
             if (args[2] == '0'){
                 trello.deleteLabelFromCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
@@ -175,7 +175,7 @@ bot.on('message', async (message) => {
         if (!args[1]) return message.reply(`укажите номер баг-репорта. /delete [номер]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (answer.length == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
                 if (error) return message.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return message.reply(`данная карточка уже удалена.`);
@@ -241,7 +241,7 @@ vk.command('', (_answer) => {
         if (!args[1] || !args[2]) return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
+            if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return _answer.reply(`Произошла ошибка при добавлении доказательств.`);
                 _answer.reply(`Вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.`);
@@ -280,7 +280,7 @@ vk.command('', (_answer) => {
         if (args[2] != '0' && args[2] != '1') return _answer.reply(`Укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
+            if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             if (+answer[0].status == +args[2]) return _answer.reply(`Нельзя изменить статус с ${answer[0].status} на ${args[2]}`);
             if (args[2] == '0'){
                 trello.deleteLabelFromCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
@@ -314,7 +314,7 @@ vk.command('', (_answer) => {
         if (!args[1]) return _answer.reply(`Укажите номер баг-репорта. /delete [номер]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
-            if (answer.size == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
+            if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
                 if (error) return _answer.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return _answer.reply(`Данная карточка уже удалена.`);
