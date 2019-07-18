@@ -1,15 +1,18 @@
 const Discord = require('discord.js');
 const Trello = require("trello");
 const mysql = require('mysql');
+const VK = require('node-vk-bot-api');
 
 const bot = new Discord.Client();
 const trello = new Trello(process.env.application_key, process.env.user_token);
+const vk = new VK({ token: process.env.vk_token });
 const server = mysql.createConnection({
     host     : process.env.host,
     user     : process.env.user,
     password : process.env.password,
     database : process.env.database,
 });
+
 server.connect(function(err){
     if (err) return console.log('[MYSQL] Ошибка подключения к базе MySQL');
     console.log('[MYSQL] Вы успешно подключились к базе данных.');
@@ -35,6 +38,10 @@ bot.login(process.env.token);
 
 bot.on('ready', () => {
     console.log(`Бот был успешно запущен!`);
+});
+
+vk.startPolling(() => {
+    console.log(`ВК-Бот был успешно запущен!`);
 });
 
 bot.on('message', async (message) => {
@@ -257,4 +264,8 @@ bot.on('message', async (message) => {
             message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
         }
     }
+});
+
+vk.command('/bug', (message) => {
+    console.log(message);
 });
