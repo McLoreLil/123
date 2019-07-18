@@ -266,6 +266,9 @@ bot.on('message', async (message) => {
     }
 });
 
-vk.command('/bug', (message) => {
+vk.command('', (message) => {
     console.log(message);
+    if (message.text.startsWith('/bug')){
+        console.log('пришла команда баг')
+    }
 });
