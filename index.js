@@ -201,7 +201,7 @@ bot.on('message', async (message) => {
 vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
-    let confa = '2000000004';
+    let confa = '2000000005';
 
     if (message.text.startsWith('/bug')){
         if (message.peer_id != confa) return _answer.reply(`Недостаточно прав доступа!`);
