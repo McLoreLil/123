@@ -317,17 +317,17 @@ vk.command('', (_answer) => {
                 if (error) return _answer.reply(`Произошла ошибка поиска, сообщите администратору.`);
                 if (card == "Could not find the card") return _answer.reply(`Данная карточка уже удалена.`);
                 if (card.idList == "5cbc665a32c3790159efe754") return _answer.reply(`Данная карточка уже удалена.`);
-                if (user["delete-cards"]){
+                /*if (user["delete-cards"]){
                     trello.deleteCard(`${answer[0].card}`, (error) => {
                         if (error) return _answer.reply(`Произошла ошибка при удалении карточки.`);
                         _answer.reply(`Вы успешно удалили карточку #${args[1]} в баг-трекере.`);
                     });
-                }else{
+                }else{*/
                     trello.updateCardList(`${answer[0].card}`, '5cbc665a32c3790159efe754', (error) => {
                         if (error) return _answer.reply(`Произошла ошибка при удалении карточки.`);
                         _answer.reply(`Вы успешно удалили карточку #${args[1]} в баг-трекере.`);
                     });
-                }
+                //}
             });
         });
     }
