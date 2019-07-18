@@ -60,7 +60,7 @@ bot.on('message', async (message) => {
 
     if (message.content.startsWith('/add')){
         message.delete();
-        if (!user["upload-images"]) return message.reply(`недостаточно прав доступа!`);
+        if (!user["upload_images"]) return message.reply(`недостаточно прав доступа!`);
         const args = message.content.slice('/add').split(/ +/);
         if (!args[1] || !args[2]) return message.reply(`укажите номер ошибки и ссылку. /add [номер] [url]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
