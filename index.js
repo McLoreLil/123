@@ -45,7 +45,7 @@ bot.on('message', async (message) => {
         if (!user["add-cards"]) return message.reply(`недостаточно прав доступа!`);
         const description = message.content.split('/bug ')[1];
         if (!description) return message.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
-        if (description.length < 5) return message.reply(`описание должно быть ясным и понятным для его отправки`);
+        if (description.length < 7) return message.reply(`описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
             trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
@@ -56,6 +56,97 @@ bot.on('message', async (message) => {
                     message.reply(`\`вы отправили отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.\``, embed);
                 });
             });
+        });
+    }
+
+    if (message.content == '/generator'){
+        if (!user["add-cards"]) return message.reply(`недостаточно прав доступа!`);
+        message.delete();
+        let ask_date = await message.reply(`\`укажите дату отправки жалобы на форуме.\``);
+        message.channel.awaitMessages(response => response.member.id == message.member.id, {
+            max: 1,
+            time: 60000,
+            errors: ['time'],
+        }).then(async (collected) => {
+            ask_date.delete();
+            let answer_date = collected.first().content;
+            collected.first().delete();
+            let ask_name = await message.reply(`\`укажите сервер и ник отправителя.\``);
+            message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                max: 1,
+                time: 60000,
+                errors: ['time'],
+            }).then(async (collected) => {
+                ask_name.delete();
+                let answer_name = collected.first().content;
+                collected.first().delete();
+                let ask_url = await message.reply(`\`укажите ссылку на жалобу.\``);
+                message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                    max: 1,
+                    time: 60000,
+                    errors: ['time'],
+                }).then(async (collected) => {
+                    ask_url.delete();
+                    let answer_url = collected.first().content;
+                    collected.first().delete();
+                    let ask_steps = await message.reply(`\`укажите шаги воспроизведения.\``);
+                    message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                        max: 1,
+                        time: 60000,
+                        errors: ['time'],
+                    }).then(async (collected) => {
+                        ask_steps.delete();
+                        let answer_steps = collected.first().content;
+                        collected.first().delete();
+                        let ask_after = await message.reply(`\`укажите, что произошло после выполнения указанных действий.\``);
+                        message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                            max: 1,
+                            time: 60000,
+                            errors: ['time'],
+                        }).then(async (collected) => {
+                            ask_after.delete();
+                            let answer_after = collected.first().content;
+                            collected.first().delete();
+                            let ask_before = await message.reply(`\`укажите, что должно произойти после выполнения действий.\``);
+                            message.channel.awaitMessages(response => response.member.id == message.member.id, {
+                                max: 1,
+                                time: 60000,
+                                errors: ['time'],
+                            }).then(async (collected) => {
+                                ask_before.delete();
+                                let answer_before = collected.first().content;
+                                collected.first().delete();
+                                const description = `**Дата отправки:** ${answer_date}\n**Автор жалобы: ${answer_name}**\n**Жалоба:** [клик](${answer_url})\n\n**Шаги воспроизведения:** ${answer_steps}\n\n**Фактический результат:** ${answer_after}\n\n**Ожидаемый результат:** ${answer_before}`;
+                                if (!description) return message.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
+                                if (description.length < 7) return message.reply(`описание должно быть ясным и понятным для его отправки`);
+                                server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
+                                    if (err) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
+                                    trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
+                                        if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
+                                        server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
+                                            if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
+                                            const embed = new Discord.RichEmbed().setDescription(`${description}`);
+                                            message.reply(`\`вы отправили отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.\``, embed);
+                                        });
+                                    });
+                                });
+                            }).catch(() => {
+                                ask_before.delete();
+                            });
+                        }).catch(() => {
+                            ask_after.delete();
+                        });
+                    }).catch(() => {
+                        ask_steps.delete();
+                    });
+                }).catch(() => {
+                    ask_url.delete();
+                });
+            }).catch(() => {
+                ask_name.delete();
+            });
+        }).catch(() => {
+            ask_date.delete();
         });
     }
 
