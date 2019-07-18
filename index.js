@@ -24,6 +24,8 @@ const allow_users = {
     "336207279412215809": {
         "add-cards": true,
         "upload_images": true,
+        "add-impotatnt-cards": true,
+        "change_status": true,
     }
 };
 
@@ -157,11 +159,67 @@ bot.on('message', async (message) => {
         if (!args[1] || !args[2]) return message.reply(`укажите номер ошибки и ссылку. /add [номер] [url]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
+            if (answer.size == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return message.reply(`произошла ошибка при добавлении доказательств.`);
                 const embed = new Discord.RichEmbed().setDescription(`[${args[2]}](${args[2]})`)
                 message.reply(`\`вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.\``, embed);
             });
+        });
+    }
+
+    if (message.content.startsWith('/важно')){
+        message.delete();
+        if (!user["add-impotatnt-cards"]) return message.reply(`недостаточно прав доступа!`);
+        const description = message.content.split('/важно ')[1];
+        if (!description) return message.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
+        if (description.length < 7) return message.reply(`описание должно быть ясным и понятным для его отправки`);
+        server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
+            if (err) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953', '5cbc573c91d0c2ddc5a8f956'] }, '5cfe153d6f94920e681fa9a2', (error, trelloCard) => {
+                if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
+                server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`, \`status\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}', '1')`, (error) => {
+                    if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
+                    const embed = new Discord.RichEmbed().setDescription(`${description}`).setColor('#FF0000');
+                    message.reply(`\`вы отправили срочный отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.\``, embed);
+                });
+            });
+        });
+    }
+
+    if (message.content.startsWith('/status')){
+        message.delete();
+        if (!user["change_status"]) return message.reply(`недостаточно прав доступа!`);
+        const args = message.content.slice('/status').split(/ +/);
+        if (!args[1] || !args[2]) return message.reply(`укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
+        if (args[2] != '0' && args[2] != '1') return message.reply(`укажите номер ошибки и статус. /status [номер] [статус (1 - важно, 0 - баг)]`);
+        server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
+            if (error) return message.reply(`произошла ошибка базы данных, сообщите администратору.`);
+            if (answer.size == 0) return message.reply(`баг-отчёт не найден. введите номер правильно.`);
+            if (+answer[0].status == +args[2]) return message.reply(`нельзя изменить статус с ${answer[0].status} на ${args[2]}`);
+            if (args[2] == '0'){
+                trello.deleteLabelFromCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
+                    if (error) return message.reply(`произошла ошибка при снятии статуса важно.`);
+                    trello.updateCardList(`${answer[0].card}`, '5cbc574a34ba2e8701f64359', (error) => {
+                        if (error) return message.reply(`произошла ошибка при снятии статуса важно, невозможно переместить карточку.`);
+                        server.query(`UPDATE \`trello\` SET \`status\` = '${args[2]}' WHERE \`id\` = '${args[1]}'`, (error) => {
+                            if (error) return message.reply(`произошла ошибка бд при снятии статуса важно.`);
+                            message.reply(`\`вы успешно сняли статус 'Важно' карточке #${args[1]} в баг-трекере.\``);
+                        });
+                    });
+                });
+            }else if (args[2] == '1'){
+                trello.addLabelToCard(`${answer[0].card}`, '5cbc573c91d0c2ddc5a8f956', (error) => {
+                    if (error) return message.reply(`произошла ошибка при установке статуса важно.`);
+                    trello.updateCardList(`${answer[0].card}`, '5cfe153d6f94920e681fa9a2', (error) => {
+                        if (error) return message.reply(`произошла ошибка при установке статуса важно, невозможно переместить карточку.`);
+                        server.query(`UPDATE \`trello\` SET \`status\` = '${args[2]}' WHERE \`id\` = '${args[1]}'`, (error) => {
+                            if (error) return message.reply(`произошла ошибка бд при установке статуса важно.`);
+                            message.reply(`\`вы успешно установили статус 'Важно' карточке #${args[1]} в баг-трекере.\``);
+                        });
+                    });
+                });
+            }
         });
     }
 
