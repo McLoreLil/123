@@ -44,19 +44,14 @@ bot.on('message', async (message) => {
         const description = message.content.split('/bug ')[1];
         if (!description) return message.reply(`введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
         if (description.length < 5) return message.reply(`описание должно быть ясным и понятным для его отправки`);
-        server.query(`SELECT LAST_INSERT_ID()`, (error, answer) => {
+        server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (error) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCardWithExtraParams('test', {
-                "desc": 'test2',
-                "labels": "Баг"
-            }, `5d2c6bc16cfdd530bb00d786`, (err) => {
-                if (err) console.error(err);
-            });
-            trello.addCard(`Баг-репорт №${+answer[0] + 1}`, `${description}`, `5d2c6bc16cfdd530bb00d786`, (error, trelloCard) => {
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc573c77454e5c3ec4c04e', (error, trelloCard) => {
                 if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
-                    message.reply(`вы отправили отчёт об ошибке №${+answer[0] + 1} в баг-трекер.`);
+                    message.reply(`вы отправили отчёт об ошибке №${+answer[0]["AUTO_INCREMENT"] + 1} в баг-трекер.`);
+                    trello.addLabelToCard(`${trelloCard.id}`, ``)
                 });
             });
         });
