@@ -34,6 +34,17 @@ const allow_users = {
     }
 };
 
+const allow_vk_users = {
+    "442332049": {
+        "add-cards": true,
+        "upload_images": true,
+        "add-impotatnt-cards": true,
+        "change_status": true,
+        "archive-cards": true,
+        "delete-cards": true,
+    }
+}
+
 bot.login(process.env.token);
 
 bot.on('ready', () => {
@@ -266,9 +277,9 @@ bot.on('message', async (message) => {
     }
 });
 
-vk.command('', (message) => {
-    console.log(message);
-    if (message.text.startsWith('/bug')){
+vk.command('', (_answer) => {
+    console.log(_answer);
+    if (_answer.message.text.startsWith('/bug')){
         console.log('пришла команда баг')
     }
 });
