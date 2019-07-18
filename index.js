@@ -53,7 +53,7 @@ bot.on('message', async (message) => {
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
                     const embed = new Discord.RichEmbed().setDescription(`${description}`);
-                    message.reply(`вы отправили отчёт об ошибке №${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`, embed);
+                    message.reply(`\`вы отправили отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.\``, embed);
                 });
             });
         });
@@ -69,7 +69,7 @@ bot.on('message', async (message) => {
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
                 if (error) return message.reply(`произошла ошибка при добавлении доказательств.`);
                 const embed = new Discord.RichEmbed().setDescription(`[${args[2]}](${args[2]})`)
-                message.reply(`вы успешно прикрепили доказательства к карточке №${args[1]} в баг-трекере.`, embed);
+                message.reply(`\`вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.\``, embed);
             });
         });
     }
