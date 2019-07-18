@@ -202,7 +202,7 @@ vk.command('', (_answer) => {
                 if (!data || !data.response[0] || !data.response[0].first_name || !data.response[0].last_name) return _answer.reply(`Произошла ошибка получения данных, повторите попытку позже.`);
                 trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `VK отправителя: ${data.response[0].first_name} ${data.response[0].last_name} [${message.from_id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
                     if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
-                    server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
+                    server.query(`INSERT INTO \`trello\` (\`card\`, \`type\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '1', '${message.from_id}', '${description}')`, (error) => {
                         if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
                         _answer.reply(`Вы отправили отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`);
                     });
@@ -239,7 +239,7 @@ vk.command('', (_answer) => {
                 if (!data || !data.response[0] || !data.response[0].first_name || !data.response[0].last_name) return _answer.reply(`Произошла ошибка получения данных, повторите попытку позже.`);
                 trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `VK отправителя: ${data.response[0].first_name} ${data.response[0].last_name} [${message.from_id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953', '5cbc573c91d0c2ddc5a8f956'] }, '5cfe153d6f94920e681fa9a2', (error, trelloCard) => {
                     if (error) return _answer.reply(`Произошла ошибка при добавлении отчёта в баг-трекер.`);
-                    server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`, \`status\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}', '1')`, (error) => {
+                    server.query(`INSERT INTO \`trello\` (\`card\`, \`type\`, \`author\`, \`description\`, \`status\`) VALUES ('${trelloCard.id}', '1', '${message.from_id}', '${description}', '1')`, (error) => {
                         if (error) return _answer.reply(`Произошла ошибка запроса к базе данных, повторите попытку позже.`);
                         _answer.reply(`Вы отправили срочный отчёт об ошибке #${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`);
                     });
