@@ -235,6 +235,7 @@ vk.command('', (_answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
             if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             if (answer[0].type != '1' || answer[0].author != `${message.from_id}`){
+                if (!user) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
                 if (!user["can_manage"]) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
             }
             trello.addAttachmentToCard(`${answer[0].card}`, `${args[2]}`, (error) => {
@@ -311,6 +312,7 @@ vk.command('', (_answer) => {
             if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
             if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
             if (answer[0].type != '1' || answer[0].author != `${message.from_id}`){
+                if (!user) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
                 if (!user["can_manage"]) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
             }
             trello.getCard('5cbc573c77454e5c3ec4c04e', `${answer[0].card}`, (error, card) => { 
