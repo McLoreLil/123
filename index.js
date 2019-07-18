@@ -208,7 +208,7 @@ vk.command('', (_answer) => {
         const description = message.text.split('/bug ')[1];
         if (!description) return _answer.reply(`Введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
         if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
-        if (description.length < 1024) return _answer.reply(`Не больше 1024 символов!`);
+        if (description.length > 1024) return _answer.reply(`Не больше 1024 символов!`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return _answer.reply(`Произошла ошибка базы данных, повторите попытку позже.`);
             let _data = vk.api(`users.get`, {user_ids: `${message.from_id}`, fields: `first_name,last_name`, access_token: process.env.vk_token }); 
@@ -246,7 +246,7 @@ vk.command('', (_answer) => {
         const description = message.text.split('/важно ')[1];
         if (!description) return _answer.reply(`Введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
         if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
-        if (description.length < 1024) return _answer.reply(`Не больше 1024 символов!`);
+        if (description.length > 1024) return _answer.reply(`Не больше 1024 символов!`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return _answer.reply(`Произошла ошибка базы данных, повторите попытку позже.`);
             let _data = vk.api(`users.get`, {user_ids: `${message.from_id}`, fields: `first_name,last_name`, access_token: process.env.vk_token }); 
