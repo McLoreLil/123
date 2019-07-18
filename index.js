@@ -48,11 +48,11 @@ bot.on('message', async (message) => {
         if (description.length < 5) return message.reply(`описание должно быть ясным и понятным для его отправки`);
         server.query(`SELECT \`AUTO_INCREMENT\` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'trello'`, (err, answer) => {
             if (err) return message.reply(`произошла ошибка базы данных, повторите попытку позже.`);
-            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\nСуть недоработки: ${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
+            trello.addCardWithExtraParams(`Баг-репорт №${+answer[0]["AUTO_INCREMENT"]}`, { desc: `Discord отправителя: ${message.member.displayName || message.member.user.tag} [${message.author.id}]\n_____\n${description}`, idLabels: ['5cbc573c91d0c2ddc5a8f953'] }, '5cbc574a34ba2e8701f64359', (error, trelloCard) => {
                 if (error) return message.reply(`произошла ошибка при добавлении отчёта в баг-трекер.`);
                 server.query(`INSERT INTO \`trello\` (\`card\`, \`author\`, \`description\`) VALUES ('${trelloCard.id}', '${message.author.id}', '${description}')`, (error) => {
                     if (error) return message.reply(`произошла ошибка запроса к базе данных, повторите попытку позже.`);
-                    message.reply(`вы отправили отчёт об ошибке №${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`);
+                    message.reply(`вы отправили отчёт об ошибке №${+answer[0]["AUTO_INCREMENT"]} в баг-трекер.`, {embed: { description: `${description}` }});
                 });
             });
         });
