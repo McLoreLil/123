@@ -199,7 +199,7 @@ bot.on('message', async (message) => {
     }
 });
 
-vk.command('', async (_answer) => {
+vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
     let confa = ['2000000005', '2000000006'];
@@ -249,17 +249,6 @@ vk.command('', async (_answer) => {
             if (message.attachments){
                 let photos = message.attachments.filter(attach => attach.type == 'photo');
                 if (photos.length != 0){
-                    let urls = [];
-                    await photos.forEach(file => {
-                        let image = file.photo.sizes.find(size => size.type == 'z');
-                        let url = image.url;
-                        imgur.uploadUrl(url).then(function (json) {
-                            urls.push(json.data.link);
-                        }).catch(function (err) {
-                            console.error(err.message);
-                        });
-                    });
-                    if (urls.length == 0) return _answer.reply(`Произошла ошибка при загрузке.`);
                     server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
                         if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
                         if (answer.length == 0) return _answer.reply(`Баг-отчёт не найден. введите номер правильно.`);
@@ -267,10 +256,16 @@ vk.command('', async (_answer) => {
                             if (!user) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
                             if (!user["can_manage"]) return _answer.reply(`Вы не можете изменять данный баг-репорт.`);
                         }
-                        urls.forEach(uri => {
-                            trello.addAttachmentToCard(`${answer[0].card}`, `${uri}`, (error) => {
-                                if (error) return _answer.reply(`Произошла ошибка при добавлении доказательств.`);
-                                _answer.reply(`Вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.`);
+                        photos.forEach(file => {
+                            let image = file.photo.sizes.find(size => size.type == 'z');
+                            let url = image.url;
+                            imgur.uploadUrl(url).then(function (json) {
+                                trello.addAttachmentToCard(`${answer[0].card}`, `${json.data.link}`, (error) => {
+                                    if (error) return _answer.reply(`Произошла ошибка при добавлении доказательств.`);
+                                    _answer.reply(`Вы успешно прикрепили доказательства к карточке #${args[1]} в баг-трекере.`);
+                                });
+                            }).catch(function (err) {
+                                console.error(err.message);
                             });
                         });
                     });
