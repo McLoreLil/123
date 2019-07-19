@@ -201,10 +201,11 @@ bot.on('message', async (message) => {
 vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
-    let confa = '2000000005';
+    let confa = ['2000000005', '2000000006'];
+    console.log(_answer);
 
     if (message.text.startsWith('/bug')){
-        if (message.peer_id != confa) return _answer.reply(`Недостаточно прав доступа!`);
+        if (!confa.includes(message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
         const description = message.text.split('/bug ')[1];
         if (!description) return _answer.reply(`Введите описание ошибки. ошибка будет передана разработчикам arizona rp`);
         if (description.length < 7) return _answer.reply(`Описание должно быть ясным и понятным для его отправки`);
@@ -228,7 +229,7 @@ vk.command('', (_answer) => {
     }
 
     if (message.text.startsWith('/add')){
-        if (message.peer_id != confa) return _answer.reply(`Недостаточно прав доступа!`);
+        if (!confa.includes(message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
         const args = message.text.slice('/add').split(/ +/);
         if (!args[1] || !args[2]) return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
@@ -305,7 +306,7 @@ vk.command('', (_answer) => {
     }
 
     if (message.text.startsWith('/delete')){
-        if (message.peer_id != confa) return _answer.reply(`Недостаточно прав доступа!`);
+        if (!confa.includes(message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
         const args = message.text.slice('/delete').split(/ +/);
         if (!args[1]) return _answer.reply(`Укажите номер баг-репорта. /delete [номер]`);
         server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
