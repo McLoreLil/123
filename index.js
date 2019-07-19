@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const Trello = require("trello");
 const mysql = require('mysql');
 const VK = require('node-vk-bot-api');
+const imgur = require('imgur');
 
 const bot = new Discord.Client();
 const trello = new Trello(process.env.application_key, process.env.user_token);
@@ -202,7 +203,21 @@ vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
     let confa = ['2000000005', '2000000006'];
-    console.log(_answer);
+    // console.log(_answer);
+    if (message.attachments){
+        let photos = message.attachments.filter(attach => attach.type == 'photo');
+        if (photos.length != 0){
+            photos.forEach(file => {
+                let image = file.photo.sizes.find(size => size.type == 'z');
+                let url = image.url;
+                imgur.uploadUrl(url).then(function (json) {
+                    console.log(json.data.link);
+                }).catch(function (err) {
+                    console.error(err.message);
+                });
+            });
+        }
+    }
 
     if (message.text.startsWith('/bug')){
         if (!confa.includes(message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
