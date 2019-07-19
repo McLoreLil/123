@@ -231,7 +231,7 @@ vk.command('', (_answer) => {
     if (message.text.startsWith('/add')){
         if (!confa.some(cf => cf == message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
         const args = message.text.slice('/add').split(/ +/);
-        if (!args[1]) return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]\nИли укажите номер ошибки и прикрепите скриншот.`);
+        if (!args[1]) return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]\nИли прикрепите скриншот. /add [номер] [вложение]`);
         if (args[2]){
             server.query(`SELECT * FROM \`trello\` WHERE \`id\` = '${args[1]}'`, (error, answer) => {
                 if (error) return _answer.reply(`Произошла ошибка базы данных, сообщите администратору.`);
@@ -270,10 +270,10 @@ vk.command('', (_answer) => {
                         });
                     });
                 }else{
-                    return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]\nИли укажите номер ошибки и прикрепите скриншот.`);
+                    return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]\nИли прикрепите скриншот. /add [номер] [вложение]`);
                 }
             }else{
-                return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]\nИли укажите номер ошибки и прикрепите скриншот.`);
+                return _answer.reply(`Укажите номер ошибки и ссылку. /add [номер] [url]\nИли прикрепите скриншот. /add [номер] [вложение]`);
             }
         }
     }
