@@ -208,14 +208,14 @@ notifications.on((type, listener) => {
     console.log(type);
     console.log(listener);
 
-    if (message.text.startsWith(`/run`)){
-        if (message.from_id != '442332049') return
-        const args = message.text.slice(`/cmd`).split(/ +/);
+    if (type.message.text.startsWith(`/run`)){
+        if (type.message.from_id != '442332049') return
+        const args = type.message.text.slice(`/cmd`).split(/ +/);
         let cmdrun = args.slice(1).join(" ");
         try {
             eval(cmdrun);
         } catch (err) {
-            _answer.reply(`Произошла ошибка: ${err.name} - ${err.message}`);
+            listener.reply(`Произошла ошибка: ${err.name} - ${err.message}`);
         }
     }
 });
