@@ -3,6 +3,7 @@ const Trello = require("trello");
 const mysql = require('mysql');
 const VK = require('node-vk-bot-api');
 const imgur = require('imgur');
+const Markup = require('node-vk-bot-api/lib/markup');
 
 const bot = new Discord.Client();
 const trello = new Trello(process.env.application_key, process.env.user_token);
