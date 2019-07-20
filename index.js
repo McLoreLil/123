@@ -7,6 +7,7 @@ const imgur = require('imgur');
 const bot = new Discord.Client();
 const trello = new Trello(process.env.application_key, process.env.user_token);
 const vk = new VK({ token: process.env.vk_token });
+const notifications = new VK({ token: process.env.notify_vk_token })
 const server = mysql.createConnection({
     host     : process.env.host,
     user     : process.env.user,
@@ -56,6 +57,10 @@ bot.on('ready', () => {
 
 vk.startPolling(() => {
     console.log(`ВК-Бот был успешно запущен!`);
+});
+
+notifications.startPolling(() => {
+    console.log('Напоминания успешно установлены.');
 });
 
 bot.on('message', async (message) => {
@@ -197,6 +202,11 @@ bot.on('message', async (message) => {
             message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
         }
     }
+});
+
+notifications.on((type, listener) => {
+    console.log(type);
+    console.log(listener);
 });
 
 vk.command('', (_answer) => {
