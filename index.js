@@ -48,8 +48,6 @@ const allow_vk_users = {
     }
 }
 
-const now_id;
-
 bot.login(process.env.token);
 
 bot.on('ready', () => {
