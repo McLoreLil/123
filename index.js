@@ -3,12 +3,10 @@ const Trello = require("trello");
 const mysql = require('mysql');
 const VK = require('node-vk-bot-api');
 const imgur = require('imgur');
-const Markup = require('node-vk-bot-api/lib/markup');
 
 const bot = new Discord.Client();
 const trello = new Trello(process.env.application_key, process.env.user_token);
 const vk = new VK({ token: process.env.vk_token });
-const notifications = new VK({ token: process.env.notify_vk_token })
 const server = mysql.createConnection({
     host     : process.env.host,
     user     : process.env.user,
@@ -50,6 +48,8 @@ const allow_vk_users = {
     }
 }
 
+const now_id;
+
 bot.login(process.env.token);
 
 bot.on('ready', () => {
@@ -58,10 +58,6 @@ bot.on('ready', () => {
 
 vk.startPolling(() => {
     console.log(`ВК-Бот был успешно запущен!`);
-});
-
-notifications.startPolling(() => {
-    console.log('Напоминания успешно установлены.');
 });
 
 bot.on('message', async (message) => {
@@ -201,22 +197,6 @@ bot.on('message', async (message) => {
             eval(cmdrun);
         } catch (err) {
             message.reply(`**\`произошла ошибка: ${err.name} - ${err.message}\`**`);
-        }
-    }
-});
-
-notifications.on((type, listener) => {
-    console.log(type);
-    console.log(listener);
-
-    if (type.message.text.startsWith(`/run`)){
-        if (type.message.from_id != '442332049') return
-        const args = type.message.text.slice(`/cmd`).split(/ +/);
-        let cmdrun = args.slice(1).join(" ");
-        try {
-            eval(cmdrun);
-        } catch (err) {
-            listener.reply(`Произошла ошибка: ${err.name} - ${err.message}`);
         }
     }
 });
@@ -400,3 +380,10 @@ vk.command('', (_answer) => {
         }
     }
 });
+
+function get_date_mysql(date){
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ` +
+        `${date.getHours().toString().padStart(2, '0')}:` +
+        `${date.getMinutes().toString().padStart(2, '0')}:` +
+        `${date.getSeconds().toString().padStart(2, '0')}`;
+}
