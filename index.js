@@ -202,7 +202,8 @@ bot.on('message', async (message) => {
 vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
-    let confa = ['2000000007'];
+    let confa = ['2000000008'];
+    if (!confa.some(cf => cf == message.peer_id)) return
 
     if (message.text.startsWith('/bug')){
         if (!confa.some(cf => cf == message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
@@ -376,6 +377,7 @@ vk.command('', (_answer) => {
     const message = _answer.message;
     let user = allow_vk_users[`${message.from_id}`]
     let confa = ['2000000005', '2000000006'];
+    if (!confa.some(cf => cf == message.peer_id)) return
 
     if (message.text.startsWith('/bug')){
         if (!confa.some(cf => cf == message.peer_id)) return _answer.reply(`Недостаточно прав доступа!`);
